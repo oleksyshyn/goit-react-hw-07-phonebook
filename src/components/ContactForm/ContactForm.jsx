@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
+import { selectContacts } from 'redux/selectors';
+import { addContact } from 'redux/operations';
 import { nanoid } from 'nanoid';
 import css from './ContactForm.module.css';
 import PropTypes from 'prop-types';
@@ -8,8 +9,7 @@ import PropTypes from 'prop-types';
 function ContactForm() {
     const [name, setName] = useState('');
     const [number, setNumber] = useState('');
-
-    const contacts = useSelector(state => state.contacts.contacts);
+    const { items } = useSelector(selectContacts);
     const dispatch = useDispatch();
 
     const handleNameChange = (e) => {
@@ -24,7 +24,7 @@ function ContactForm() {
         e.preventDefault();
         const contactId = nanoid();
         const newContact = { id: contactId, name, number };
-        const isSameName = contacts.some(contact => contact.name.toLowerCase() === newContact.name.toLowerCase());
+        const isSameName = items.some(item => item.name.toLowerCase() === newContact.name.toLowerCase());
         if (isSameName) {
             alert(`${newContact.name} is already in contacts!`);
             return;
